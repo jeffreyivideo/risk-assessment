@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>危害風險評估查詢系統</title>
+  <style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+
+  <h2>機場清潔作業 - 風險評估查詢</h2>
+  
+  <input type="text" id="searchInput" placeholder="輸入作業項目或危害關鍵字 (例: 洗地, 墜落)...">
+  <button onclick="searchRisk()">查詢</button>
+
+  <table id="resultTable">
+    <thead>
+      <tr>
+        <th>作業項目</th>
+        <th>潛在危害</th>
+        <th>風險等級(R)</th>
+        <th>控制措施</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 查詢結果將由 JavaScript 填入 -->
+    </tbody>
+  </table>
+
+  <script>
+    // 替換成您部署 Google Apps Script 後取得的 Web App URL
+    const gasApiUrl = "https://script.google.com/macros/s/AKfycbxJsHPw7K4vdC3mQ3VcciyIxP_YgYu4t3HnUcVEADZTbv9pWZ5wObsRjg3g3Z3nOVQ0Og/exec";
+
+    function searchRisk() {
+      const keyword = document.getElementById("searchInput").value;
+      const url = gasApiUrl + "?keyword=" + encodeURIComponent(keyword);
+      const tbody = document.querySelector("#resultTable tbody");
+      
+      tbody.innerHTML = "<tr><td colspan='4'>查詢中，請稍候...</td></tr>";
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          tbody.innerHTML = ""; // 清空表格
+          if (data.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='4'>查無相關資料</td></tr>";
+            return;
+          }
+          // 渲染資料
+          data.forEach(item => {
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${item.task}</td>
+              <td>${item.hazard}</td>
+              <td>${item.riskLevel}</td>
+              <td>${item.control}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          tbody.innerHTML = "<tr><td colspan='4'>查詢失敗，請檢查網路狀態。</td></tr>";
+        });
+    }
+  </script>
+</body>
+</html>
