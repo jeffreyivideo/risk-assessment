@@ -3,66 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>危害風險評估查詢系統</title>
+  <title>信實集團 - 危害風險評估查詢系統</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    input, button { padding: 10px; font-size: 16px; }
-    input { width: 60%; max-width: 300px; margin-right: 10px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
+    :root {
+      --primary-color: #0056b3; /* 企業主色調：藍色 */
+      --secondary-color: #f4f7f6;
+      --text-color: #333;
+      --border-color: #ddd;
+    }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      margin: 0; 
+      padding: 0;
+    }
+
+    /* 頂部導覽與 Logo 區塊 */
+    .header {
+      background-color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .header img {
+      height: 50px; /* 您可以根據實際 Logo 調整高度 */
+      object-fit: contain;
+    }
+    .header h2 {
+      margin: 0;
+      color: var(--primary-color);
+      font-size: 22px;
+    }
+
+    /* 內容主體 */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* 搜尋區塊 */
+    .search-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      background-color: #f9fbfd;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #e1e8ed;
+    }
+    
+    .search-box select, .search-box input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+    }
+    .search-box select:focus, .search-box input:focus {
+      border-color: var(--primary-color);
+    }
+    
+    .search-box button {
+      padding: 10px 25px;
+      font-size: 16px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .search-box button:hover {
+      background-color: #004494;
+    }
+
+    /* 表格設計 */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 10px; 
+    }
+    th, td { 
+      border: 1px solid var(--border-color); 
+      padding: 12px; 
+      text-align: left; 
+      font-size: 14.5px;
+    }
+    th { 
+      background-color: var(--primary-color); 
+      color: white; 
+      position: sticky;
+      top: 0;
+    }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    tr:hover { background-color: #f1f5f9; }
+
+    /* 狀態標籤 (風險等級顏色) */
+    .risk-high { color: #d32f2f; font-weight: bold; }
+    .risk-med { color: #f57c00; font-weight: bold; }
+    .risk-low { color: #388e3c; font-weight: bold; }
+    
+    .loading { text-align: center; color: #666; padding: 20px; }
   </style>
 </head>
 <body>
 
-  <h2>機場清潔作業 - 風險評估查詢</h2>
-  
-  <input type="text" id="searchInput" placeholder="輸入作業名稱或危害 (例: 跌倒)...">
-  <button onclick="searchRisk()">查詢</button>
+  <!-- 頂部標題與 Logo -->
+  <div class="header">
+    <!-- ⚠️ 請將下方 src 替換為信實集團真實的 Logo 圖片網址 -->
+    <img src="https://via.placeholder.com/200x60/ffffff/0056b3?text=Serene+Logo" alt="信實集團">
+    <h2>機場清潔作業 - 危害風險評估查詢</h2>
+  </div>
 
-  <table id="resultTable">
-    <thead>
-      <tr>
-        <th>作業項目</th>
-        <th>潛在危害</th>
-        <th>嚴重性(S)</th>
-        <th>可能性(P)</th>
-        <th>風險等級(R)</th>
-        <th>控制措施</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- 結果顯示區 -->
-    </tbody>
-  </table>
+  <div class="container">
+    <!-- 搜尋工具列 -->
+    <div class="search-box">
+      <select id="categorySelect">
+        <option value="">-- 全部分類 (請選擇作業項目) --</option>
+        <optgroup label="共同作業">
+          <option value="辦公室&共同作業">辦公室&共同作業</option>
+          <option value="設施使用">設施使用(電梯、電扶梯、茶水間、廁所、空調、A字梯)</option>
+          <option value="倉庫作業">倉庫作業</option>
+          <option value="道路作業">道路作業</option>
+          <option value="承攬商_訪客">承攬商_訪客</option>
+        </optgroup>
+        <optgroup label="一般清潔作業">
+          <option value="共同清潔">共同清潔作業</option>
+          <option value="廁所清潔">廁所清潔作業</option>
+          <option value="除塵.玻璃.設施清潔">除塵.玻璃.設施清潔作業</option>
+          <option value="地毯清潔">地毯清潔作業</option>
+          <option value="洗地.打蠟及晶化">洗地.打蠟及晶化作業</option>
+          <option value="消毒除臭">消毒除臭作業</option>
+          <option value="垃圾收集與資源回收">垃圾收集與資源回收作業</option>
+        </optgroup>
+        <optgroup label="病媒、設備機具、非駐點">
+          <option value="病媒防治">病媒防治作業</option>
+          <option value="高空工作車">高空工作車作業</option>
+          <option value="剪刀車">剪刀車作業</option>
+          <option value="升降平台">升降平台作業</option>
+          <option value="吊籠">吊籠作業</option>
+          <option value="高壓噴槍清洗">高壓噴槍清洗作業</option>
+          <option value="繩索作業">繩索作業(外包)</option>
+          <option value="設備維護保養">設備維護保養作業(內部-承攬商)</option>
+        </optgroup>
+      </select>
+      
+      <input type="text" id="searchInput" placeholder="進階關鍵字 (例: 跌倒, 割傷)..." onkeypress="handleEnter(event)">
+      <button onclick="searchRisk()">🔍 查詢</button>
+    </div>
+
+    <!-- 查詢結果表格 -->
+    <div class="table-responsive">
+      <table id="resultTable">
+        <thead>
+          <tr>
+            <th width="20%">作業項目</th>
+            <th width="25%">潛在危害</th>
+            <th width="8%">嚴重(S)</th>
+            <th width="8%">可能(P)</th>
+            <th width="9%">風險(R)</th>
+            <th width="30%">控制措施</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="6" class="loading">請選擇上方作業項目或輸入關鍵字進行查詢</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
   <script>
-    // ⚠️ 請務必將下方網址替換為您 GAS 重新部署後的新網址！
+    // ⚠️ 務必將下方網址替換為您 Google Apps Script 的 Web App 網址！
     const gasApiUrl = "https://script.google.com/macros/s/AKfycbxJsHPw7K4vdC3mQ3VcciyIxP_YgYu4t3HnUcVEADZTbv9pWZ5wObsRjg3g3Z3nOVQ0Og/exec";
 
+    // 支援按下 Enter 鍵直接搜尋
+    function handleEnter(e) {
+      if (e.key === 'Enter') searchRisk();
+    }
+
     function searchRisk() {
+      const category = document.getElementById("categorySelect").value;
       const keyword = document.getElementById("searchInput").value;
-      const url = gasApiUrl + "?keyword=" + encodeURIComponent(keyword);
+      
+      // 將下拉選單與輸入框的值合併作為查詢條件
+      let combinedKeyword = category;
+      if (keyword.trim() !== "") {
+        combinedKeyword += " " + keyword.trim();
+      }
+
+      const url = gasApiUrl + "?keyword=" + encodeURIComponent(combinedKeyword);
       const tbody = document.querySelector("#resultTable tbody");
       
-      tbody.innerHTML = "<tr><td colspan='6'>查詢中，請稍候...</td></tr>";
+      tbody.innerHTML = "<tr><td colspan='6' class='loading'>資料讀取中，請稍候...</td></tr>";
 
       fetch(url)
         .then(response => response.json())
         .then(data => {
           tbody.innerHTML = ""; 
           if (data.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='6'>查無相關資料</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='6' class='loading'>查無相關資料</td></tr>";
             return;
           }
           data.forEach(item => {
             let tr = document.createElement("tr");
+            
+            // 替風險等級上色 (假設 R 為 1~9 數字，可依您實際狀況調整)
+            let riskClass = "";
+            let riskVal = parseInt(item.riskLevel);
+            if(riskVal >= 6) riskClass = "risk-high";
+            else if(riskVal >= 3) riskClass = "risk-med";
+            else riskClass = "risk-low";
+
             tr.innerHTML = `
               <td>${item.task}</td>
               <td>${item.hazard}</td>
               <td>${item.severity}</td>
               <td>${item.probability}</td>
-              <td>${item.riskLevel}</td>
+              <td class="${riskClass}">${item.riskLevel}</td>
               <td>${item.control}</td>
             `;
             tbody.appendChild(tr);
@@ -70,7 +243,7 @@
         })
         .catch(error => {
           console.error("Error:", error);
-          tbody.innerHTML = "<tr><td colspan='6'>查詢失敗，請檢查網路連線或 API 網址設定。</td></tr>";
+          tbody.innerHTML = "<tr><td colspan='6' class='loading' style='color:red;'>連線失敗，請檢查網路或 API 網址是否正確。</td></tr>";
         });
     }
   </script>
