@@ -2,8 +2,12 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>危害風險評估查詢系統</title>
   <style>
+    body { font-family: sans-serif; padding: 20px; }
+    input, button { padding: 10px; font-size: 16px; }
+    input { width: 60%; max-width: 300px; margin-right: 10px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     th { background-color: #f2f2f2; }
@@ -13,7 +17,7 @@
 
   <h2>機場清潔作業 - 風險評估查詢</h2>
   
-  <input type="text" id="searchInput" placeholder="輸入作業項目或危害關鍵字 (例: 洗地, 墜落)...">
+  <input type="text" id="searchInput" placeholder="輸入作業名稱或危害 (例: 跌倒)...">
   <button onclick="searchRisk()">查詢</button>
 
   <table id="resultTable">
@@ -21,17 +25,19 @@
       <tr>
         <th>作業項目</th>
         <th>潛在危害</th>
+        <th>嚴重性(S)</th>
+        <th>可能性(P)</th>
         <th>風險等級(R)</th>
         <th>控制措施</th>
       </tr>
     </thead>
     <tbody>
-      <!-- 查詢結果將由 JavaScript 填入 -->
+      <!-- 結果顯示區 -->
     </tbody>
   </table>
 
   <script>
-    // 替換成您部署 Google Apps Script 後取得的 Web App URL
+    // ⚠️ 請務必將下方網址替換為您 GAS 重新部署後的新網址！
     const gasApiUrl = "https://script.google.com/macros/s/AKfycbxJsHPw7K4vdC3mQ3VcciyIxP_YgYu4t3HnUcVEADZTbv9pWZ5wObsRjg3g3Z3nOVQ0Og/exec";
 
     function searchRisk() {
@@ -39,22 +45,23 @@
       const url = gasApiUrl + "?keyword=" + encodeURIComponent(keyword);
       const tbody = document.querySelector("#resultTable tbody");
       
-      tbody.innerHTML = "<tr><td colspan='4'>查詢中，請稍候...</td></tr>";
+      tbody.innerHTML = "<tr><td colspan='6'>查詢中，請稍候...</td></tr>";
 
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          tbody.innerHTML = ""; // 清空表格
+          tbody.innerHTML = ""; 
           if (data.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='4'>查無相關資料</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='6'>查無相關資料</td></tr>";
             return;
           }
-          // 渲染資料
           data.forEach(item => {
             let tr = document.createElement("tr");
             tr.innerHTML = `
               <td>${item.task}</td>
               <td>${item.hazard}</td>
+              <td>${item.severity}</td>
+              <td>${item.probability}</td>
               <td>${item.riskLevel}</td>
               <td>${item.control}</td>
             `;
@@ -63,7 +70,7 @@
         })
         .catch(error => {
           console.error("Error:", error);
-          tbody.innerHTML = "<tr><td colspan='4'>查詢失敗，請檢查網路狀態。</td></tr>";
+          tbody.innerHTML = "<tr><td colspan='6'>查詢失敗，請檢查網路連線或 API 網址設定。</td></tr>";
         });
     }
   </script>
