@@ -15,26 +15,40 @@
     .header { background-color: white; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 15px; }
     .header img { height: 50px; object-fit: contain; }
     .header h2 { margin: 0; color: var(--primary-color); font-size: 22px; }
-    .container { max-width: 1400px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .container { max-width: 98%; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    
     .search-box { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; background-color: #f9fbfd; padding: 15px; border-radius: 6px; border: 1px solid #e1e8ed; }
     .search-box select, .search-box input { flex: 1; min-width: 200px; padding: 10px; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
     .search-box button { padding: 10px 25px; font-size: 16px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
     .search-box button:hover { background-color: #004494; }
-    .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 1200px; }
-    th, td { border: 1px solid var(--border-color); padding: 10px 8px; text-align: left; font-size: 14px; }
-    th { background-color: var(--primary-color); color: white; position: sticky; top: 0; }
+    
+    .table-responsive { overflow-x: auto; max-height: 70vh; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0; min-width: 1600px; }
+    th, td { border: 1px solid var(--border-color); padding: 8px; text-align: left; font-size: 14px; vertical-align: top; }
+    
+    /* 凍結表頭 */
+    thead { position: sticky; top: 0; z-index: 2; }
+    th { background-color: var(--primary-color); color: white; }
+    
     /* 群組化標題樣式 */
-    .th-group-pre { background-color: #0056b3; text-align: center; border-bottom: 2px solid white; }
-    .th-group-post { background-color: #00897b; text-align: center; border-bottom: 2px solid white; }
-    .th-sub-post { background-color: #009688; color: white; }
+    .th-group-exist { background-color: #f0ad4e; color: #fff; text-align: center; border-bottom: 1px solid #fff; }
+    .th-sub-exist { background-color: #ec971f; color: white; text-align: center; }
+    
+    .th-group-pre { background-color: #0056b3; text-align: center; border-bottom: 1px solid #fff; }
+    .th-sub-pre { background-color: #004494; color: white; text-align: center; }
+
+    .th-group-post { background-color: #00897b; text-align: center; border-bottom: 1px solid #fff; }
+    .th-sub-post { background-color: #00695c; color: white; text-align: center; }
     
     tr:nth-child(even) { background-color: #f9f9f9; }
     tr:hover { background-color: #f1f5f9; }
-    .risk-high { color: #d32f2f; font-weight: bold; }
-    .risk-med { color: #f57c00; font-weight: bold; }
-    .risk-low { color: #388e3c; font-weight: bold; }
-    .loading { text-align: center; color: #666; padding: 20px; }
+    
+    /* 風險等級顏色 */
+    .risk-high { background-color: #ffebee !important; color: #d32f2f; font-weight: bold; text-align: center; }
+    .risk-med { background-color: #fff3e0 !important; color: #e65100; font-weight: bold; text-align: center; }
+    .risk-low { background-color: #e8f5e9 !important; color: #2e7d32; font-weight: bold; text-align: center; }
+    
+    .loading { text-align: center; color: #666; padding: 20px; font-size: 16px; }
   </style>
 </head>
 <body>
@@ -84,32 +98,41 @@
       <table id="resultTable">
         <thead>
           <tr>
-            <th rowspan="2" width="12%">作業項目</th>
-            <th rowspan="2" width="15%">潛在危害(後果)</th>
-            <th rowspan="2" width="8%">危害類型</th>
-            <th rowspan="2" width="8%">風險或機會</th>
-            <th colspan="3" class="th-group-pre">處理前評估</th>
-            <th rowspan="2" width="22%">控制/處理措施</th>
-            <th colspan="3" class="th-group-post">處理後評估</th>
+            <th rowspan="2" width="10%">作業項目</th>
+            <th rowspan="2" width="12%">潛在危害(後果)</th>
+            <th rowspan="2" width="6%">危害類型</th>
+            
+            <th colspan="3" class="th-group-exist">現有防護設施</th>
+            <th colspan="3" class="th-group-pre">處理前風險</th>
+            
+            <th rowspan="2" width="6%">風險或<br>機會</th>
+            <th rowspan="2" width="16%">控制/處理措施</th>
+            
+            <th colspan="3" class="th-group-post">處理後風險</th>
           </tr>
           <tr>
-            <th width="4%">S</th>
-            <th width="4%">P</th>
-            <th width="5%">R</th>
-            <th width="4%" class="th-sub-post">S</th>
-            <th width="4%" class="th-sub-post">P</th>
-            <th width="5%" class="th-sub-post">R</th>
+            <th width="8%" class="th-sub-exist">工程控制</th>
+            <th width="8%" class="th-sub-exist">管理控制</th>
+            <th width="8%" class="th-sub-exist">個人防護具</th>
+            
+            <th width="3%" class="th-sub-pre">S</th>
+            <th width="3%" class="th-sub-pre">P</th>
+            <th width="3%" class="th-sub-pre">R</th>
+            
+            <th width="3%" class="th-sub-post">S</th>
+            <th width="3%" class="th-sub-post">P</th>
+            <th width="3%" class="th-sub-post">R</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td colspan="11" class="loading">請選擇上方作業項目或輸入關鍵字進行查詢</td></tr>
+          <tr><td colspan="14" class="loading">請選擇上方作業項目或輸入關鍵字進行查詢</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
   <script>
-    // ⚠️ 貼上您最新部署的 Apps Script Web App URL
+    // ⚠️ 務必將下方替換為您 Google Apps Script 的 Web App 網址！
     const gasApiUrl = "https://script.google.com/macros/s/AKfycbxJsHPw7K4vdC3mQ3VcciyIxP_YgYu4t3HnUcVEADZTbv9pWZ5wObsRjg3g3Z3nOVQ0Og/exec";
 
     function getRiskClass(riskVal) {
@@ -125,21 +148,19 @@
       const keyword = document.getElementById("searchInput").value.trim();
       
       let combinedKeyword = category;
-      if (keyword !== "") {
-        combinedKeyword += " " + keyword;
-      }
+      if (keyword !== "") combinedKeyword += " " + keyword;
 
       const url = gasApiUrl + "?keyword=" + encodeURIComponent(combinedKeyword);
       const tbody = document.querySelector("#resultTable tbody");
       
-      tbody.innerHTML = "<tr><td colspan='11' class='loading'>資料讀取中，請稍候...</td></tr>";
+      tbody.innerHTML = "<tr><td colspan='14' class='loading'>資料讀取中，請稍候...</td></tr>";
 
       fetch(url)
         .then(response => response.json())
         .then(data => {
           tbody.innerHTML = ""; 
           if (data.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='11' class='loading'>查無相關資料</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='14' class='loading'>查無相關資料</td></tr>";
             return;
           }
           data.forEach(item => {
@@ -152,13 +173,20 @@
               <td>${item.task}</td>
               <td>${item.hazardDesc}</td>
               <td>${item.hazardType}</td>
-              <td>${item.riskOrOpp}</td>
-              <td>${item.severity}</td>
-              <td>${item.probability}</td>
+              
+              <td>${item.engControl}</td>
+              <td>${item.adminControl}</td>
+              <td>${item.ppeControl}</td>
+              
+              <td style="text-align:center;">${item.severity}</td>
+              <td style="text-align:center;">${item.probability}</td>
               <td class="${preRiskClass}">${item.riskLevel}</td>
+              
+              <td>${item.riskOrOpp}</td>
               <td>${item.control}</td>
-              <td>${item.postSeverity}</td>
-              <td>${item.postProbability}</td>
+              
+              <td style="text-align:center;">${item.postSeverity}</td>
+              <td style="text-align:center;">${item.postProbability}</td>
               <td class="${postRiskClass}">${item.postRiskLevel}</td>
             `;
             tbody.appendChild(tr);
@@ -166,7 +194,7 @@
         })
         .catch(error => {
           console.error("Error:", error);
-          tbody.innerHTML = "<tr><td colspan='11' class='loading' style='color:red;'>連線失敗，請檢查 API 網址是否正確。</td></tr>";
+          tbody.innerHTML = "<tr><td colspan='14' class='loading' style='color:red;'>連線失敗，請檢查 API 網址是否正確。</td></tr>";
         });
     }
   </script>
