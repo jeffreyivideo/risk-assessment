@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>信實集團 - 危害風險評估查詢系統</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     :root {
       --primary-blue: #0056b3;
@@ -14,140 +15,69 @@
       --th-bg-post: #00897b;
     }
     
-    body { 
-      font-family: 'Helvetica Neue', Helvetica, Arial, 'Microsoft JhengHei', sans-serif; 
-      background-color: var(--bg-color); 
-      color: #333; 
-      margin: 0; 
-      padding: 0; 
-    }
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, 'Microsoft JhengHei', sans-serif; background-color: var(--bg-color); color: #333; margin: 0; padding: 0; }
     
-    .header { 
-      background-color: white; 
-      padding: 15px 30px; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
-      display: flex; 
-      align-items: center; 
-      gap: 20px; 
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    
-    .header img { height: 45px; object-fit: contain; }
+    /* 頂部標頭 */
+    .header { background-color: white; padding: 15px 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; position: sticky; top: 0; z-index: 10; }
     .header h2 { margin: 0; color: var(--primary-blue); font-size: 22px; font-weight: 600; letter-spacing: 1px; }
     
-    .container { 
-      max-width: 96%; 
-      margin: 25px auto; 
-      background: white; 
-      border-radius: 10px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-      padding: 25px;
-      box-sizing: border-box;
-    }
+    .container { max-width: 96%; margin: 25px auto; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px; box-sizing: border-box; }
     
-    .search-box { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 12px; 
-      margin-bottom: 25px; 
-      background-color: #f8fafc; 
-      padding: 15px 20px; 
-      border-radius: 8px; 
-      border: 1px solid #e2e8f0; 
-    }
-    
-    .search-box select, .search-box input { 
-      flex: 1; 
-      min-width: 250px; 
-      padding: 12px 15px; 
-      font-size: 15px; 
-      border: 1px solid #cbd5e1; 
-      border-radius: 6px; 
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    
+    /* 搜尋區塊 */
+    .search-box { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 25px; background-color: #f8fafc; padding: 15px 20px; border-radius: 8px; border: 1px solid #e2e8f0; align-items: center; }
+    .search-box select, .search-box input { flex: 1; min-width: 200px; padding: 12px 15px; font-size: 15px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; transition: border-color 0.2s; }
     .search-box select:focus, .search-box input:focus { border-color: var(--primary-blue); }
     
-    .search-box button { 
-      padding: 12px 30px; 
-      font-size: 16px; 
-      font-weight: bold;
-      background-color: var(--primary-blue); 
-      color: white; 
-      border: none; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      transition: background-color 0.2s, transform 0.1s;
-    }
-    .search-box button:hover { background-color: #004494; transform: translateY(-1px); }
+    .search-box button { padding: 12px 25px; font-size: 15px; font-weight: bold; color: white; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+    .btn-search { background-color: var(--primary-blue); }
+    .btn-search:hover { background-color: #004494; transform: translateY(-1px); }
+    .btn-directory { background-color: #f39c12; }
+    .btn-directory:hover { background-color: #d68910; transform: translateY(-1px); }
     
-    .table-responsive { 
-      overflow-x: auto; 
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-    }
-    
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      min-width: 1500px; 
-      background-color: white;
-    }
-    
-    th, td { 
-      border: 1px solid var(--border-color); 
-      padding: 12px 10px; 
-      text-align: left; 
-      font-size: 14.5px; 
-      vertical-align: middle; 
-      line-height: 1.5;
-    }
-    
-    /* 凍結表頭與顏色設計 */
+    /* 資料表格 */
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border-color); }
+    table { width: 100%; border-collapse: collapse; min-width: 1500px; background-color: white; }
+    th, td { border: 1px solid var(--border-color); padding: 12px 10px; text-align: left; font-size: 14.5px; vertical-align: middle; line-height: 1.5; }
     thead { position: sticky; top: 0; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     th { color: white; font-weight: 500; border-right: 1px solid rgba(255,255,255,0.2); }
     
     .th-main { background-color: var(--primary-blue); text-align: center; }
-    
     .th-group-exist { background-color: var(--th-bg-exist); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); }
     .th-sub-exist { background-color: #e67e22; text-align: center; font-size: 13.5px; }
-    
     .th-group-pre { background-color: var(--th-bg-pre); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); }
     .th-sub-pre { background-color: #0056b3; text-align: center; font-size: 13.5px; }
-
     .th-group-post { background-color: var(--th-bg-post); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); }
     .th-sub-post { background-color: #00796b; text-align: center; font-size: 13.5px; }
     
     tr:nth-child(even) { background-color: #fafbfc; }
     tr:hover { background-color: #f1f5f9; }
-    
-    /* 置中對齊特定欄位 */
     .text-center { text-align: center !important; }
     
-    /* 風險等級標籤化 (Badge) */
-    .risk-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-weight: bold;
-      min-width: 25px;
-      text-align: center;
-    }
+    .risk-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-weight: bold; min-width: 25px; text-align: center; }
     .risk-high { background-color: #ffebee; color: #d32f2f; border: 1px solid #ffcdd2; }
     .risk-med { background-color: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
     .risk-low { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-    
-    .loading { text-align: center; color: #666; padding: 40px; font-size: 16px; letter-spacing: 1px; }
-    
-    /* 針對無資料的欄位淡化處理 */
     .empty-cell { color: #999; font-style: italic; }
+    .loading { text-align: center; color: #666; padding: 40px; font-size: 16px; letter-spacing: 1px; }
+
+    /* 目錄 Modal 彈窗樣式 */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+    .modal-content { background: white; width: 90%; max-width: 650px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; }
+    .modal-header { padding: 15px 20px; background: var(--primary-blue); color: white; display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { margin: 0; font-size: 18px; font-weight: 500; }
+    .modal-close { background: none; border: none; color: white; font-size: 24px; cursor: pointer; transition: transform 0.2s; }
+    .modal-close:hover { transform: scale(1.2); }
+    .modal-body { padding: 0; overflow-y: auto; }
+    .summary-table { width: 100%; min-width: 100%; border-collapse: collapse; }
+    .summary-table th, .summary-table td { padding: 12px 15px; border-bottom: 1px solid #eee; text-align: left; }
+    .summary-table th { background: #f8fafc; position: sticky; top: 0; color: #555; font-weight: bold; border-bottom: 2px solid #ddd; border-right: none; }
+    .summary-table tr:hover { background: #f1f5f9; }
+    .badge-count { background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 14px; }
   </style>
 </head>
 <body>
 
+  <!-- 標頭 -->
   <div class="header">
     <div style="width: 50px; height: 50px; background-color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #eaeaea; margin-right: 15px; flex-shrink: 0;">
         <div style="width: 80%; height: 55%; border: 2px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
@@ -190,7 +120,10 @@
       </select>
       
       <input type="text" id="searchInput" placeholder="進階關鍵字 (例: 被撞, 跌倒)..." onkeypress="if(event.key === 'Enter') searchRisk();">
-      <button onclick="searchRisk()">查詢</button>
+      <button class="btn-search" onclick="searchRisk()"><i class="fas fa-search"></i> 查詢</button>
+      
+      <!-- 新增目錄按鈕 -->
+      <button class="btn-directory" onclick="showSummary()"><i class="fas fa-list-ul"></i> 目錄總覽</button>
     </div>
 
     <div class="table-responsive">
@@ -230,10 +163,95 @@
     </div>
   </div>
 
+  <!-- 目錄彈出視窗 (Modal) -->
+  <div id="summaryModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-list-ul"></i> 危害風險評估目錄</h3>
+        <button class="modal-close" onclick="closeSummary()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>分類作業名稱</th>
+              <th class="text-center">評估項目數</th>
+              <th class="text-center">更新日期</th>
+            </tr>
+          </thead>
+          <tbody id="summaryTableBody">
+            <!-- 目錄資料會填入這裡 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ⚠️ 務必將下方替換為您 Google Apps Script 的 Web App 網址！
     const gasApiUrl = "https://script.google.com/macros/s/AKfycbxJsHPw7K4vdC3mQ3VcciyIxP_YgYu4t3HnUcVEADZTbv9pWZ5wObsRjg3g3Z3nOVQ0Og/exec";
 
+    // 點擊 Modal 外圍關閉視窗
+    window.onclick = function(event) {
+      const modal = document.getElementById("summaryModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    function showSummary() {
+      const modal = document.getElementById("summaryModal");
+      const tbody = document.getElementById("summaryTableBody");
+      
+      modal.style.display = "flex";
+      tbody.innerHTML = "<tr><td colspan='3' class='loading'>載入目錄資料中，請稍候...</td></tr>";
+
+      // 呼叫新增的目錄 API 參數
+      const url = gasApiUrl + "?action=summary";
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          tbody.innerHTML = "";
+          let totalCount = 0;
+          
+          if (data.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='3' class='loading'>無法取得目錄資料</td></tr>";
+            return;
+          }
+          
+          data.forEach(item => {
+            totalCount += item.count;
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td style="font-weight: 500;">${item.category}</td>
+              <td class="text-center"><span class="badge-count">${item.count}</span> 筆</td>
+              <td class="text-center" style="color: #666; font-size: 14px;">${item.date}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+          
+          // 添加總計列
+          let trTotal = document.createElement("tr");
+          trTotal.style.backgroundColor = "#f8fafc";
+          trTotal.innerHTML = `
+            <td style="font-weight: bold; text-align: right; color: #0056b3;">總計</td>
+            <td class="text-center"><span class="badge-count" style="background:#dcfce7; color:#166534; font-size: 15px;">${totalCount}</span> 筆</td>
+            <td></td>
+          `;
+          tbody.appendChild(trTotal);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          tbody.innerHTML = "<tr><td colspan='3' class='loading' style='color:red;'>連線失敗，請檢查 API。</td></tr>";
+        });
+    }
+
+    function closeSummary() {
+      document.getElementById("summaryModal").style.display = "none";
+    }
+
+    // 格式化風險與文字
     function getRiskBadge(riskVal) {
       const val = parseInt(riskVal);
       if(isNaN(val)) return `<span class="empty-cell">-</span>`;
@@ -246,11 +264,11 @@
       return text && text !== "無" ? text : `<span class="empty-cell">無</span>`;
     }
 
+    // 既有的查詢功能
     function searchRisk() {
       const category = document.getElementById("categorySelect").value;
       const keyword = document.getElementById("searchInput").value.trim();
       
-      // 【修改重點】：將 category 和 keyword 變成兩個獨立的參數傳給後端
       const url = `${gasApiUrl}?category=${encodeURIComponent(category)}&keyword=${encodeURIComponent(keyword)}`;
       
       const tbody = document.querySelector("#resultTable tbody");
@@ -266,23 +284,18 @@
           }
           data.forEach(item => {
             let tr = document.createElement("tr");
-
             tr.innerHTML = `
               <td>${item.task}</td>
               <td>${item.hazardDesc}</td>
               <td class="text-center">${formatText(item.hazardType)}</td>
-              
               <td>${formatText(item.engControl)}</td>
               <td>${formatText(item.adminControl)}</td>
               <td>${formatText(item.ppeControl)}</td>
-              
               <td class="text-center">${item.severity}</td>
               <td class="text-center">${item.probability}</td>
               <td class="text-center">${getRiskBadge(item.riskLevel)}</td>
-              
               <td class="text-center">${formatText(item.riskOrOpp)}</td>
               <td>${formatText(item.control)}</td>
-              
               <td class="text-center">${item.postSeverity}</td>
               <td class="text-center">${item.postProbability}</td>
               <td class="text-center">${getRiskBadge(item.postRiskLevel)}</td>
